@@ -33,7 +33,7 @@ class _CarsFeedViewState extends State<CarsFeedView> {
             backgroundImage: AssetImage('assets/images/logo.png'),
           ),
         ),
-        title: Text(
+        title: const Text(
           'VW Seminovos',
           style: TextStyle(
             letterSpacing: -0.5,

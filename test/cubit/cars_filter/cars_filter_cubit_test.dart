@@ -185,14 +185,51 @@ void main() {
 
     blocTest(
       'clearFilters should reset to initial state',
-      build: () {
-        return carsFilterCubit;
-      },
+      build: () => carsFilterCubit,
       act: (carsFilterCubit) async {
         carsFilterCubit.clearFilters();
       },
       expect: [
         InitialCarsFilter(),
+      ],
+    );
+
+    blocTest(
+      'filterBrands should return all brands when term is empty',
+      build: () => carsFilterCubit,
+      act: (carsFilterCubit) async {
+        carsFilterCubit.filterBrands(
+          [
+            BrandModel(brandId: '1', name: 'Audi'),
+            BrandModel(brandId: '2', name: 'Ferrari'),
+          ],
+          '',
+        );
+      },
+      expect: [
+        BrandsFiltered(brands: [
+          BrandModel(brandId: '1', name: 'Audi'),
+          BrandModel(brandId: '2', name: 'Ferrari'),
+        ]),
+      ],
+    );
+
+    blocTest(
+      'filterBrands should return filtered brands',
+      build: () => carsFilterCubit,
+      act: (carsFilterCubit) async {
+        carsFilterCubit.filterBrands(
+          [
+            BrandModel(brandId: '1', name: 'Audi'),
+            BrandModel(brandId: '2', name: 'Ferrari'),
+          ],
+          'au',
+        );
+      },
+      expect: [
+        BrandsFiltered(brands: [
+          BrandModel(brandId: '1', name: 'Audi'),
+        ]),
       ],
     );
   });

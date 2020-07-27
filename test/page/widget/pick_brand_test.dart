@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterdryve/cubit/cars_feed/cars_feed_cubit.dart';
 import 'package:flutterdryve/cubit/cars_filter/cars_filter_cubit.dart';
+import 'package:flutterdryve/cubit/cars_filter/cars_filter_state.dart';
 import 'package:flutterdryve/model/brand_model.dart';
 import 'package:flutterdryve/model/car_model.dart';
 import 'package:flutterdryve/model/color_model.dart';
@@ -142,6 +143,84 @@ void main() {
       await tester.tap(checkbox);
       await tester.pumpAndSettle();
       verify(mockCarsFilterCubit.unpickBrand(any)).called(1);
+    });
+
+    testWidgets('should show the filtered brands', (tester) async {
+      final mockCarsFeedCubit = MockCarsFeedCubit();
+      when(mockCarsFeedCubit.allCars).thenReturn(cars);
+      when(mockCarsFeedCubit.allBrands).thenReturn(brands);
+      when(mockCarsFeedCubit.allColors).thenReturn(colors);
+      final mockCarsFilterCubit = MockCarsFilterCubit();
+      when(mockCarsFilterCubit.isColorPicked(any)).thenReturn(false);
+      when(mockCarsFilterCubit.isBrandPicked(any)).thenReturn(false);
+      when(mockCarsFilterCubit.pickedBrands).thenReturn([]);
+      when(mockCarsFilterCubit.isBrandPicked(any)).thenReturn(true);
+      when(mockCarsFilterCubit.pickedColors).thenReturn([]);
+      when(mockCarsFilterCubit.state).thenReturn(
+        BrandsFiltered(
+          brands: [
+            BrandModel(brandId: '2', name: 'Ford'),
+          ],
+        ),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MultiBlocProvider(
+            providers: [
+              BlocProvider<CarsFeedCubit>(
+                create: (_) => mockCarsFeedCubit,
+              ),
+              BlocProvider<CarsFilterCubit>(
+                create: (_) => mockCarsFilterCubit,
+              ),
+            ],
+            child: Scaffold(
+              body: PickBrand(brands),
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(CheckboxListTile), findsOneWidget);
+    });
+
+    testWidgets('textfield onchange should call bloc', (tester) async {
+      final mockCarsFeedCubit = MockCarsFeedCubit();
+      when(mockCarsFeedCubit.allCars).thenReturn(cars);
+      when(mockCarsFeedCubit.allBrands).thenReturn(brands);
+      when(mockCarsFeedCubit.allColors).thenReturn(colors);
+      final mockCarsFilterCubit = MockCarsFilterCubit();
+      when(mockCarsFilterCubit.isColorPicked(any)).thenReturn(false);
+      when(mockCarsFilterCubit.isBrandPicked(any)).thenReturn(false);
+      when(mockCarsFilterCubit.pickedBrands).thenReturn([]);
+      when(mockCarsFilterCubit.isBrandPicked(any)).thenReturn(true);
+      when(mockCarsFilterCubit.pickedColors).thenReturn([]);
+      when(mockCarsFilterCubit.state).thenReturn(
+        BrandsFiltered(
+          brands: [
+            BrandModel(brandId: '2', name: 'Ford'),
+          ],
+        ),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MultiBlocProvider(
+            providers: [
+              BlocProvider<CarsFeedCubit>(
+                create: (_) => mockCarsFeedCubit,
+              ),
+              BlocProvider<CarsFilterCubit>(
+                create: (_) => mockCarsFilterCubit,
+              ),
+            ],
+            child: Scaffold(
+              body: PickBrand(brands),
+            ),
+          ),
+        ),
+      );
+      final textfield = find.byType(TextField);
+      await tester.enterText(textfield, 'au');
+      verify(mockCarsFilterCubit.filterBrands(brands, 'au')).called(1);
     });
   });
 }

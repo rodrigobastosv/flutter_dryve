@@ -20,7 +20,7 @@ class CarInfoPage extends StatelessWidget {
         title: RichText(
           maxLines: 1,
           text: TextSpan(
-            style: TextStyle(
+            style: const TextStyle(
               letterSpacing: -0.5,
               color: const Color(0xFF4b5670),
               fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class LabelValue extends StatelessWidget {
         children: <Widget>[
           Text(
             '$label:',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),

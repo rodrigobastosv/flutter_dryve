@@ -9,17 +9,35 @@ class CarsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.65,
+    if (cars.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            childAspectRatio: 0.65,
+          ),
+          itemBuilder: (_, i) => CarTile(cars[i]),
+          itemCount: cars.length,
         ),
-        itemBuilder: (_, i) => CarTile(cars[i]),
-        itemCount: cars.length,
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.directions_car, size: 120),
+            const SizedBox(height: 12),
+            const Text(
+              'Nenhum carro encontrado!',
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
